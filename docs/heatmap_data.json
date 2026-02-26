@@ -2,16 +2,31 @@
   {
     "lat": 31.5011,
     "lon": 34.4668,
-    "intensity": 1.0
+    "intensity": 0.95
   },
   {
     "lat": 31.9,
     "lon": 35.2,
-    "intensity": 0.9
+    "intensity": 0.855
   },
   {
     "lat": 34.5,
     "lon": 70.0,
+    "intensity": 0.9025
+  },
+  {
+    "lat": 33.8209,
+    "lon": 35.8336,
     "intensity": 0.95
+  },
+  {
+    "lat": 31.5,
+    "lon": 34.47,
+    "intensity": 1.0
+  },
+  {
+    "lat": 33.5,
+    "lon": 71.0,
+    "intensity": 0.9
   }
 ]
