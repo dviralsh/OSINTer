@@ -14,23 +14,23 @@
 </head>
 <body>
     <div class="nav-overlay">
-        <a href="index.html">← Back to Blog</a>
+        <a href="index.html">Back to Blog</a>
     </div>
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
     <script>
-        const map = L.map('map').setView([31.0461, 34.8516], 4); // Focused on Middle East
+        const map = L.map('map').setView([31.0461, 34.8516], 4);
 
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        fetch('heatmap_data.json')
+        const cacheBuster = new Date().getTime();
+        fetch('heatmap_data.json?t=' + cacheBuster)
             .then(response => response.json())
             .then(data => {
-                // Leaflet heat requires array of [lat, lng, intensity]
                 const heatPoints = data.map(point => [point.lat, point.lon, point.intensity]);
                 L.heatLayer(heatPoints, {
                     radius: 25,

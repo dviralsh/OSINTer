@@ -24,7 +24,8 @@
     </div>
 
     <script>
-        fetch('blog_data.json')
+        const cacheBuster = new Date().getTime();
+        fetch('blog_data.json?t=' + cacheBuster)
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('blog-container');
