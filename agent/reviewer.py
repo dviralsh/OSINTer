@@ -28,7 +28,6 @@ def review_and_optimize_crawlers():
         Fix any potential bugs (like missing imports, bad XML parsing, or logic errors), optimize the logic, and ensure it appends valid JSON to 'agent/data/raw_data.json'.
         The script MUST run once and exit. Never use infinite loops (like `while True`).
         Return ONLY the optimized Python code. Do not include markdown wrappers like python. 
-        Do not write any comments or prints in Hebrew.
         
         Code to review:
         {code}
@@ -56,7 +55,8 @@ def suggest_new_directions():
     crawler_files = [f for f in os.listdir(CRAWLERS_DIR) if f.endswith(".py")]
     prompt = f"""
     You are a lead OSINT architect. Your system currently has these crawlers: {', '.join(crawler_files)}.
-    Suggest exactly ONE new, highly valuable open intelligence source (e.g., a specific public RSS feed, an open API, public government data) that is NOT in this list.
+    Suggest exactly ONE new, highly valuable open intelligence source that is NOT in this list.
+    Specifically, focus on specialized OSINT projects and trackers like 'pizzint.watch', aviation trackers, or social media threat monitors.
     Write a brief, technical instruction for the upgrade agent to build it.
     Return ONLY the instruction string.
     """

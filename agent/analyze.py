@@ -72,12 +72,15 @@ def analyze_data_and_generate_content():
     1. 'blog_post': A highly structured, official-looking intelligence report in HTML format. 
        DO NOT write a single block of text. 
        You MUST use the following HTML structure:
-       - <h3> tags for major intelligence categories (e.g., "Geopolitical Shifts", "Global Security", "Economic Indicators", "Internal Affairs").
-       - <ul> and <li> tags for ALL specific events or data points (use bullet points heavily for readability).
+       - <h3> tags for major intelligence categories.
+       - <ul> and <li> tags for ALL specific events or data points.
        - <strong> tags to highlight key entities, locations, or critical impacts.
-       - Keep the tone short, concise, and highly professional, like a military or intelligence SITREP (Situation Report). 
+       - Keep the tone short, concise, and highly professional, like a military SITREP.
        Ignore code errors in the blog.
-    2. 'locations': A list of relevant locations mentioned in valid data, formatted exactly as objects with 'lat', 'lon', and 'intensity' (0.3-1.0). Example: [{{"lat": 31.0461, "lon": 34.8516, "intensity": 1.0}}]
+    2. 'locations': A list of locations THAT ARE CURRENTLY UNDER THREAT or are the source of an active threat. 
+       DO NOT list every mentioned country or city. Format exactly as objects with 'lat', 'lon', and 'intensity'. 
+       The 'intensity' MUST represent the threat level strictly on a scale from 0.8 (low threat, yellow alert) to 1.0 (high immediate alert, red). 
+       Example: [{{"lat": 31.0461, "lon": 34.8516, "intensity": 0.9}}]
     3. 'agent_feedback': If there are error entries ('no data - error'), write a clear, technical instruction for the upgrade agent to fix the specific crawler file based on the error message. If the data is good, leave this as an empty string.
     
     Output ONLY valid JSON.

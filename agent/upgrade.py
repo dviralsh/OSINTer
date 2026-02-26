@@ -37,7 +37,7 @@ def run_upgrade():
     
     Your task:
     If there is feedback about a broken crawler or bad data format, fix the specific crawler mentioned. 
-    Otherwise, write a NEW crawler for a REAL, public news source or open API (e.g., RSS feeds, other OSINT tool (pizzint and more alike) etc.). Do not use mock data.
+    Otherwise, write a NEW crawler for a REAL, public news source, open API, or specialized OSINT projects (specifically target sources like pizzint.watch or similar intelligence aggregation platforms). Do not use mock data.
     
     Requirements for the Python script:
     1. Fetch real recent news, OSINT or intelligence data.
@@ -47,7 +47,7 @@ def run_upgrade():
     5. The script MUST run once and exit. Never use infinite loops (like `while True`).
     
     Output strictly a JSON object with two keys:
-    - 'filename': A smart, descriptive filename for the crawler (e.g., 'crawler_aljazeera_rss.py'). If fixing an existing crawler, use its exact existing filename.
+    - 'filename': A smart, descriptive filename for the crawler (e.g., 'crawler_pizzint.py'). If fixing an existing crawler, use its exact existing filename.
     - 'code': The complete, runnable Python code as a string. Do not include markdown formatting like python in the string itself.
     """
     
@@ -59,7 +59,7 @@ def run_upgrade():
                 {"role": "user", "content": prompt}
             ],
             max_completion_tokens=3000
-            )
+        )
         
         result_str = response.choices[0].message.content.strip()
         
