@@ -53,14 +53,22 @@ def analyze_data_and_generate_content():
     raw_text = "".join(lines)[:15000]
     
     prompt = f"""
-    You are an OSINT lead analyst. Read the following raw data scraped by your crawler agents. 
+    You are an OSINT lead analyst generating an official intelligence report. 
+    Read the following raw data scraped by your crawler agents. 
     Some entries might indicate errors in the format 'no data - error: ...'.
     
     Raw Data:
     {raw_text}
     
     Produce a JSON output strictly with three keys:
-    1. 'blog_post': A detailed analytical summary in HTML format (use <h3>, <p>, <ul> tags). Ignore code errors in the blog.
+    1. 'blog_post': A highly structured, official-looking intelligence report in HTML format. 
+       DO NOT write a single block of text. 
+       You MUST use the following HTML structure:
+       - <h3> tags for major intelligence categories (e.g., "Geopolitical Shifts", "Global Security", "Economic Indicators", "Internal Affairs").
+       - <ul> and <li> tags for ALL specific events or data points (use bullet points heavily for readability).
+       - <strong> tags to highlight key entities, locations, or critical impacts.
+       - Keep the tone short, concise, and highly professional, like a military or intelligence SITREP (Situation Report). 
+       Ignore code errors in the blog.
     2. 'locations': A list of locations mentioned in valid data, formatted exactly as objects with 'lat', 'lon', and 'intensity' (always 1.0). Example: [{{"lat": 31.0461, "lon": 34.8516, "intensity": 1.0}}]
     3. 'agent_feedback': If there are error entries ('no data - error'), write a clear, technical instruction for the upgrade agent to fix the specific crawler file based on the error message. If the data is good, leave this as an empty string.
     
