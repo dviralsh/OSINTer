@@ -1,8 +1,8 @@
 import os
 import json
-import openai
+from openai import OpenAI
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 CRAWLERS_DIR = "agent/crawlers"
 DATA_DIR = "agent/data"
@@ -51,8 +51,8 @@ def run_upgrade():
     """
     
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-5-mini",
+        response = client.chat.completions.create(
+            model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are an elite OSINT software engineer. Output only valid JSON."},
                 {"role": "user", "content": prompt}
@@ -61,7 +61,7 @@ def run_upgrade():
             temperature=0.7
         )
         
-        result_str = response.choices[0].message['content'].strip()
+        result_str = response.choices[0].message.content.strip()
         
         if result_str.startswith("```json"):
             result_str = result_str[7:]

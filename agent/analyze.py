@@ -1,10 +1,10 @@
 import os
 import json
 import subprocess
-import openai
 from datetime import datetime
+from openai import OpenAI
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 DATA_DIR = "agent/data"
 DATA_FILE = os.path.join(DATA_DIR, "raw_data.json")
@@ -64,14 +64,14 @@ def analyze_data_and_generate_content():
     """
     
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-5-mini",
+        response = client.chat.completions.create(
+            model="gpt-4",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=4000,
             temperature=0.3
         )
         
-        result_str = response.choices[0].message['content'].strip()
+        result_str = response.choices[0].message.content.strip()
         result_data = json.loads(result_str)
         
         update_blog(result_data.get("blog_post", ""))
