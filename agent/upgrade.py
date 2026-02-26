@@ -44,10 +44,11 @@ def run_upgrade():
     2. Append the extracted text as a JSON string to 'agent/data/raw_data.json'. The format MUST be a dictionary with 'source' and 'content' keys.
     3. Use libraries like 'requests' or 'beautifulsoup4'.
     4. Wrap the main logic in a try-except block.
+    5. The script MUST run once and exit. Never use infinite loops (like `while True`).
     
     Output strictly a JSON object with two keys:
     - 'filename': A smart, descriptive filename for the crawler (e.g., 'crawler_aljazeera_rss.py'). If fixing an existing crawler, use its exact existing filename.
-    - 'code': The complete, runnable Python code as a string. Do not include markdown formatting like ```python in the string itself.
+    - 'code': The complete, runnable Python code as a string. Do not include markdown formatting like python in the string itself.
     """
     
     try:
