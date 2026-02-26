@@ -37,10 +37,10 @@ def run_upgrade():
     
     Your task:
     If there is feedback about a broken crawler or bad data format, fix the specific crawler mentioned. 
-    Otherwise, write a NEW crawler for a REAL, public news source or open API (e.g., RSS feeds like Reuters, BBC, Wikipedia recent changes, etc.). Do not use mock data.
+    Otherwise, write a NEW crawler for a REAL, public news source or open API (e.g., RSS feeds, other OSINT tool (pizzint and more alike) etc.). Do not use mock data.
     
     Requirements for the Python script:
-    1. Fetch real recent news or intelligence data.
+    1. Fetch real recent news, OSINT or intelligence data.
     2. Append the extracted text as a JSON string to 'agent/data/raw_data.json'. The format MUST be a dictionary with 'source' and 'content' keys.
     3. Use libraries like 'requests' or 'beautifulsoup4'.
     4. Wrap the main logic in a try-except block.
