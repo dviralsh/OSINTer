@@ -31,7 +31,13 @@ jobs:
         run: |
           git config --global user.name "OSINT-AI-Agent"
           git config --global user.email "agent@osint.local"
+          # Disable rebase to allow standard merging
+          git config pull.rebase false
+          
           git add agent/ docs/
           git commit -m "Auto-update: Agent state and dashboard" || echo "No changes to commit"
-          git pull --rebase origin main
+          
+          # Pull changes from the remote, automatically resolving conflicts by keeping local changes
+          git pull origin main -X ours
+          
           git push
