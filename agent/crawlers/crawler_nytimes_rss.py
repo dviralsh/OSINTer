@@ -9,15 +9,15 @@ def parse_rss(url):
     articles = []
     try:
         r = requests.get(url)
-        soup = BeautifulSoup(r.content, features='xml')
+        soup = BeautifulSoup(r.content, 'xml')
         items = soup.findAll('item')
 
         for item in items:
             news_item = {}
-            news_item['title'] = item.title.text
-            news_item['description'] = item.description.text
-            news_item['pubDate'] = item.pubDate.text
-            news_item['link'] = item.link.text
+            news_item['title'] = item.title.text if item.title else None
+            news_item['description'] = item.description.text if item.description else None
+            news_item['pubDate'] = item.pubDate.text if item.pubDate else None
+            news_item['link'] = item.link.text if item.link else None
             articles.append(news_item)
     except Exception as e:
         print('The scraping job failed. See exception: ', e)
@@ -33,9 +33,10 @@ def main():
         print('Starting scraping cycle')
         try:
             articles = parse_rss(url)
-            for article in articles:
-                append_json('agent/data/raw_data.json', {'source': 'NYTimes', 'content': article})
-            print('Scraping cycle completed')
+            if articles:
+                for article in articles:
+                    append_json('agent/data/raw_data.json', {'source': 'NYTimes', 'content': article})
+                print('Scraping cycle completed')
         except Exception as e:
             print('Error in main loop', e)
         time.sleep(60*60)
