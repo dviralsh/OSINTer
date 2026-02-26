@@ -1,6 +1,7 @@
 import os
 import json
 import subprocess
+import re
 from datetime import datetime
 from openai import OpenAI
 
@@ -50,7 +51,13 @@ def analyze_data_and_generate_content():
     if not lines:
         return
         
-    raw_text = "".join(lines)[:15000]
+    raw_text = ""
+    char_count = 0
+    for line in lines:
+        if char_count + len(line) > 15000:
+            break
+        raw_text += line
+        char_count += len(line)
     
     prompt = f"""
     You are an OSINT lead analyst generating an official intelligence report. 
@@ -85,12 +92,19 @@ def analyze_data_and_generate_content():
         )
         
         result_str = response.choices[0].message.content.strip()
-        if result_str.startswith("```json"):
-            result_str = result_str[7:]
-        if result_str.endswith("```"):
-            result_str = result_str[:-3]
+        
+        match = re.search(r'\{.*\}', result_str, re.DOTALL)
+        if match:
+            result_str = match.group(0)
             
-        result_data = json.loads(result_str.strip())
+        try:
+            result_data = json.loads(result_str)
+        except json.JSONDecodeError as json_err:
+            result_data = {
+                "blog_post": f"<h3>System Error</h3><p>The analysis agent encountered a formatting error.</p><p>Error details: {str(json_err)}</p>",
+                "locations": [],
+                "agent_feedback": "LLM returned invalid JSON. Make sure to escape HTML properly."
+            }
         
         update_blog(result_data.get("blog_post", ""))
         update_heatmap(result_data.get("locations", []))
@@ -101,8 +115,8 @@ def analyze_data_and_generate_content():
         
         open(DATA_FILE, 'w').close()
         
-    except Exception:
-        write_feedback("The analysis step failed to parse the raw data. Please ensure crawlers append strictly valid JSON on each line.")
+    except Exception as e:
+        write_feedback(f"The analysis step failed completely. Error: {str(e)}")
 
 def update_blog(new_html_content):
     if not new_html_content:
