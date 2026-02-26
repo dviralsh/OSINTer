@@ -31,6 +31,7 @@ jobs:
         run: |
           git config --global user.name "OSINT-AI-Agent"
           git config --global user.email "agent@osint.local"
-          git add docs/
-          git commit -m "Auto-analysis: Updated heatmap and blog" || echo "No changes to commit"
+          git add agent/ docs/
+          git commit -m "Auto-update: Agent state and dashboard" || echo "No changes to commit"
+          git pull --rebase origin main
           git push
