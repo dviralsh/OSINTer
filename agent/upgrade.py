@@ -58,9 +58,8 @@ def run_upgrade():
                 {"role": "system", "content": "You are an elite OSINT software engineer. Output only valid JSON."},
                 {"role": "user", "content": prompt}
             ],
-            max_completion_tokens=3000,
-            temperature=0.7
-        )
+            max_completion_tokens=3000
+            )
         
         result_str = response.choices[0].message.content.strip()
         

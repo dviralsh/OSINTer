@@ -38,8 +38,7 @@ def review_and_optimize_crawlers():
             response = client.chat.completions.create(
                 model="gpt-5-mini",
                 messages=[{"role": "user", "content": prompt}],
-                max_completion_tokens=2000,
-                temperature=0.2
+                max_completion_tokens=2000
             )
             
             optimized_code = response.choices[0].message.content.strip()
@@ -65,8 +64,7 @@ def suggest_new_directions():
         response = client.chat.completions.create(
             model="gpt-5-mini",
             messages=[{"role": "user", "content": prompt}],
-            max_completion_tokens=300,
-            temperature=0.7
+            max_completion_tokens=300
         )
         suggestion = response.choices[0].message.content.strip()
         write_feedback(f"Architect Suggestion: {suggestion}")
