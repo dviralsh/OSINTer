@@ -1,0 +1,36 @@
+name: OSINT Code Review & Architecture
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  review_code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Reviewer Script
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python agent/reviewer.py
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "OSINT-Architect"
+          git config --global user.email "architect@osint.local"
+          git add agent/
+          git commit -m "Auto-review: Code optimization and architectural suggestions" || echo "No changes to commit"
+          git push

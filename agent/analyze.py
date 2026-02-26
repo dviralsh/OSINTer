@@ -18,20 +18,23 @@ os.makedirs("docs", exist_ok=True)
 
 def run_crawlers():
     if not os.path.exists(CRAWLERS_DIR):
-        print("No crawlers found.")
         return
         
     for crawler in os.listdir(CRAWLERS_DIR):
         if crawler.endswith(".py"):
             script_path = os.path.join(CRAWLERS_DIR, crawler)
-            print(f"Running {script_path}...")
             try:
-                subprocess.run(["python", script_path], check=True, timeout=60)
-            except subprocess.CalledProcessError:
-                print(f"Crawler {crawler} execution failed.")
-                write_feedback(f"Crawler {crawler} crashed during execution. Please review its error handling and logic.")
+                result = subprocess.run(["python", script_path], capture_output=True, text=True, timeout=60)
+                if result.returncode != 0:
+                    error_msg = result.stderr.strip()[-300:]
+                    with open(DATA_FILE, 'a', encoding='utf-8') as f:
+                        f.write(json.dumps({"source": crawler, "content": f"no data - error: {error_msg}"}) + "\n")
+            except subprocess.TimeoutExpired:
+                with open(DATA_FILE, 'a', encoding='utf-8') as f:
+                    f.write(json.dumps({"source": crawler, "content": "no data - error: execution timed out after 60 seconds"}) + "\n")
             except Exception as e:
-                print(f"Crawler {crawler} failed: {e}")
+                with open(DATA_FILE, 'a', encoding='utf-8') as f:
+                    f.write(json.dumps({"source": crawler, "content": f"no data - error: {str(e)}"}) + "\n")
 
 def write_feedback(message):
     with open(FEEDBACK_FILE, "a", encoding="utf-8") as f:
@@ -39,26 +42,27 @@ def write_feedback(message):
 
 def analyze_data_and_generate_content():
     if not os.path.exists(DATA_FILE):
-        print("No raw data to analyze.")
         return
         
     with open(DATA_FILE, "r", encoding="utf-8") as f:
         lines = f.readlines()
         
     if not lines:
-        print("Data file is empty.")
         return
         
     raw_text = "".join(lines)[:15000]
     
     prompt = f"""
-    You are an OSINT lead analyst. Read the following raw data scraped by your crawler agents:
+    You are an OSINT lead analyst. Read the following raw data scraped by your crawler agents. 
+    Some entries might indicate errors in the format 'no data - error: ...'.
+    
+    Raw Data:
     {raw_text}
     
     Produce a JSON output strictly with three keys:
-    1. 'blog_post': A detailed analytical summary in HTML format (use <h3>, <p>, <ul> tags).
-    2. 'locations': A list of locations mentioned, formatted exactly as objects with 'lat', 'lon', and 'intensity' (always 1.0). Example: [{{"lat": 31.0461, "lon": 34.8516, "intensity": 1.0}}]
-    3. 'agent_feedback': If the data is poorly formatted, empty, or contains errors, write a short instruction for the upgrade agent on how to fix the crawler output. If the data is good, leave this as an empty string.
+    1. 'blog_post': A detailed analytical summary in HTML format (use <h3>, <p>, <ul> tags). Ignore code errors in the blog.
+    2. 'locations': A list of locations mentioned in valid data, formatted exactly as objects with 'lat', 'lon', and 'intensity' (always 1.0). Example: [{{"lat": 31.0461, "lon": 34.8516, "intensity": 1.0}}]
+    3. 'agent_feedback': If there are error entries ('no data - error'), write a clear, technical instruction for the upgrade agent to fix the specific crawler file based on the error message. If the data is good, leave this as an empty string.
     
     Output ONLY valid JSON.
     """
@@ -72,7 +76,12 @@ def analyze_data_and_generate_content():
         )
         
         result_str = response.choices[0].message.content.strip()
-        result_data = json.loads(result_str)
+        if result_str.startswith("```json"):
+            result_str = result_str[7:]
+        if result_str.endswith("```"):
+            result_str = result_str[:-3]
+            
+        result_data = json.loads(result_str.strip())
         
         update_blog(result_data.get("blog_post", ""))
         update_heatmap(result_data.get("locations", []))
@@ -83,8 +92,7 @@ def analyze_data_and_generate_content():
         
         open(DATA_FILE, 'w').close()
         
-    except Exception as e:
-        print(f"Analysis failed: {e}")
+    except Exception:
         write_feedback("The analysis step failed to parse the raw data. Please ensure crawlers append strictly valid JSON on each line.")
 
 def update_blog(new_html_content):
