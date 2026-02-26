@@ -54,6 +54,7 @@ def analyze_data_and_generate_content():
     
     prompt = f"""
     You are an OSINT lead analyst generating an official intelligence report. 
+    You focus on Middle-East topics and Israel-related conflicts. 
     Read the following raw data scraped by your crawler agents. 
     Some entries might indicate errors in the format 'no data - error: ...'.
     
@@ -69,7 +70,7 @@ def analyze_data_and_generate_content():
        - <strong> tags to highlight key entities, locations, or critical impacts.
        - Keep the tone short, concise, and highly professional, like a military or intelligence SITREP (Situation Report). 
        Ignore code errors in the blog.
-    2. 'locations': A list of locations mentioned in valid data, formatted exactly as objects with 'lat', 'lon', and 'intensity' (always 1.0). Example: [{{"lat": 31.0461, "lon": 34.8516, "intensity": 1.0}}]
+    2. 'locations': A list of relevant locations mentioned in valid data, formatted exactly as objects with 'lat', 'lon', and 'intensity' (0.3-1.0). Example: [{{"lat": 31.0461, "lon": 34.8516, "intensity": 1.0}}]
     3. 'agent_feedback': If there are error entries ('no data - error'), write a clear, technical instruction for the upgrade agent to fix the specific crawler file based on the error message. If the data is good, leave this as an empty string.
     
     Output ONLY valid JSON.
