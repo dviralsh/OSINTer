@@ -12,14 +12,16 @@ try:
 
     for item in items:
         news_item = {}
-        news_item['title'] = item.title.text
-        news_item['link'] = item.link.text
-        news_item['pubDate'] = item.pubDate.text
-        news_item['description'] = item.description.text
+        news_item['title'] = item.title.text if item.title else None
+        news_item['link'] = item.link.text if item.link else None
+        news_item['pubDate'] = item.pubDate.text if item.pubDate else None
+        news_item['description'] = item.description.text if item.description else None
         news_items.append(news_item)
 
     with open('agent/data/raw_data.json', 'a') as outfile:
-        json.dump(news_items, outfile)
+        for item in news_items:
+            json.dump(item, outfile)
+            outfile.write('\n')
 
 except Exception as e:
     print('The scraping job failed. See exception: ')

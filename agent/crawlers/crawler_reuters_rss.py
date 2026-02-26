@@ -11,7 +11,6 @@ try:
     news_items = [{'source': 'Reuters', 'title': item.title.text, 'link': item.link.text, 'pubDate': item.pubDate.text} for item in items]
 
     with open('agent/data/raw_data.json', 'a') as f:
-        for news_item in news_items:
-            f.write(json.dumps(news_item) + '\n')
+        json.dump(news_items, f)
 except Exception as e:
     print(f'Something went wrong while fetching the data: {e}')
