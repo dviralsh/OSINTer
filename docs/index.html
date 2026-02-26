@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT AI Agent - Analysis Blog</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .post { border-bottom: 1px solid #ddd; padding-bottom: 20px; margin-bottom: 20px; }
+        .timestamp { color: #888; font-size: 0.9em; margin-bottom: 10px; }
+        nav { margin-bottom: 20px; }
+        nav a { margin-right: 15px; text-decoration: none; color: #0056b3; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="index.html">Intelligence Blog</a>
+            <a href="map.html">Live Threat Map</a>
+        </nav>
+        <h1>Autonomous OSINT Intelligence Briefings</h1>
+        <div id="blog-container">Loading latest intelligence...</div>
+    </div>
+
+    <script>
+        fetch('blog_data.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('blog-container');
+                container.innerHTML = '';
+                data.forEach(entry => {
+                    const postDiv = document.createElement('div');
+                    postDiv.className = 'post';
+                    postDiv.innerHTML = `<div class="timestamp">${entry.time}</div>${entry.content}`;
+                    container.appendChild(postDiv);
+                });
+            })
+            .catch(error => {
+                document.getElementById('blog-container').innerHTML = '<p>No data available yet.</p>';
+            });
+    </script>
+</body>
+</html>

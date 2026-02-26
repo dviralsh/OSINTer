@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT AI Agent - Threat Heatmap</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { height: 100vh; width: 100%; }
+        .nav-overlay { position: absolute; top: 10px; left: 50px; z-index: 1000; background: white; padding: 10px; border-radius: 5px; box-shadow: 0 0 5px rgba(0,0,0,0.3); }
+        .nav-overlay a { text-decoration: none; color: #0056b3; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="nav-overlay">
+        <a href="index.html">← Back to Blog</a>
+    </div>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+    <script>
+        const map = L.map('map').setView([31.0461, 34.8516], 4); // Focused on Middle East
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        fetch('heatmap_data.json')
+            .then(response => response.json())
+            .then(data => {
+                // Leaflet heat requires array of [lat, lng, intensity]
+                const heatPoints = data.map(point => [point.lat, point.lon, point.intensity]);
+                L.heatLayer(heatPoints, {
+                    radius: 25,
+                    blur: 15,
+                    maxZoom: 10,
+                    gradient: {0.4: 'blue', 0.6: 'cyan', 0.7: 'lime', 0.8: 'yellow', 1.0: 'red'}
+                }).addTo(map);
+            })
+            .catch(error => console.error('Error loading heatmap data:', error));
+    </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+name: OSINT Analysis & Publishing
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  analyze_data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Analysis Script
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python agent/analyze.py
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "OSINT-AI-Agent"
+          git config --global user.email "agent@osint.local"
+          git add docs/
+          git commit -m "Auto-analysis: Updated heatmap and blog" || echo "No changes to commit"
+          git push

@@ -1,0 +1,36 @@
+name: OSINT Daily Upgrade
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade_agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Upgrade Script
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python agent/upgrade.py
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "OSINT-AI-Agent"
+          git config --global user.email "agent@osint.local"
+          git add agent/crawlers/
+          git commit -m "Auto-upgrade: Added new crawling capabilities" || echo "No changes to commit"
+          git push
