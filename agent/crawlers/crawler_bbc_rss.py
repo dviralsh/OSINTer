@@ -12,8 +12,7 @@ try:
     news_items = [{'source': 'BBC', 'content': item.find('description').text} for item in items]
 
     with open('agent/data/raw_data.json', 'a') as f:
-        for news_item in news_items:
-            f.write(json.dumps(news_item) + '\n')
+        json.dump(news_items, f)
 except requests.exceptions.HTTPError as http_err:
     print(f'HTTP error occurred: {http_err}')
 except requests.exceptions.RequestException as req_err:

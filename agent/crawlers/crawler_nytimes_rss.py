@@ -24,9 +24,12 @@ def parse_rss(url):
     return articles
 
 def append_json(filename, data):
-    with open(filename, 'a') as f:
-        json.dump(data, f)
-        f.write('\n')
+    try:
+        with open(filename, 'a') as f:
+            json.dump(data, f)
+            f.write('\n')
+    except Exception as e:
+        print('Failed to append data to json file. See exception: ', e)
 
 def main():
     while True:
