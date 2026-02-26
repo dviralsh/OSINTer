@@ -26,7 +26,8 @@ def review_and_optimize_crawlers():
         You are a senior Python software engineer reviewing OSINT data crawlers.
         Review the following code for '{crawler}'.
         Fix any potential bugs (like missing imports, bad XML parsing, or logic errors), optimize the logic, and ensure it appends valid JSON to 'agent/data/raw_data.json'.
-        Return ONLY the optimized Python code. Do not include markdown wrappers like ```python. 
+        The script MUST run once and exit. Never use infinite loops (like `while True`).
+        Return ONLY the optimized Python code. Do not include markdown wrappers like python. 
         Do not write any comments or prints in Hebrew.
         
         Code to review:
@@ -35,9 +36,9 @@ def review_and_optimize_crawlers():
         
         try:
             response = client.chat.completions.create(
-                model="gpt-4",
+                model="gpt-5-mini",
                 messages=[{"role": "user", "content": prompt}],
-                max_tokens=2000,
+                max_completion_tokens=2000,
                 temperature=0.2
             )
             
@@ -64,7 +65,7 @@ def suggest_new_directions():
         response = client.chat.completions.create(
             model="gpt-5-mini",
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=300,
+            max_completion_tokens=300,
             temperature=0.7
         )
         suggestion = response.choices[0].message.content.strip()

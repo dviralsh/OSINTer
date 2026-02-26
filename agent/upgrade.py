@@ -58,7 +58,7 @@ def run_upgrade():
                 {"role": "system", "content": "You are an elite OSINT software engineer. Output only valid JSON."},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=3000,
+            max_completion_tokens=3000,
             temperature=0.7
         )
         
