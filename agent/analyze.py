@@ -65,7 +65,7 @@ def analyze_data_and_generate_content():
     
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-4",
+            model="gpt-5-mini",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=4000,
             temperature=0.3
