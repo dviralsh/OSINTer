@@ -52,7 +52,7 @@ def run_upgrade():
     
     try:
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-5-mini",
             messages=[
                 {"role": "system", "content": "You are an elite OSINT software engineer. Output only valid JSON."},
                 {"role": "user", "content": prompt}

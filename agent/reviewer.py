@@ -62,7 +62,7 @@ def suggest_new_directions():
     """
     try:
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-5-mini",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=300,
             temperature=0.7
