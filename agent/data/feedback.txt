@@ -38,3 +38,4 @@ Data Analysis Feedback: no data - error: missing raw data payload from crawler a
 7) Quick checks for ops: provide a curl command to reproduce remote behavior and collect headers: curl -v -sS -D - '<SOURCE_URL>' -o response_body.bin ; echo "len=$(wc -c < response_body.bin)" ; sha256sum response_body.bin
 8) File locations & ownership: ensure output files are atomically written (write to temp + rename) to avoid partial reads by downstream processors; verify permissions for the pipeline user.
 Implement these fixes, then run an end-to-end ingestion test and provide the resulting logs and the produced JSON envelope for validation.
+Architect Suggestion: 
