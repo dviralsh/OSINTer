@@ -1,0 +1,30 @@
+Data Analysis Feedback: ERROR: Crawler ingestion produced no usable raw data. Actionable instructions for upgrade agent:
+
+1) Detect and classify the failure mode
+   - If the crawler returns the literal token string starting with 'no data - error', capture the full error string and map to an error code.
+   - If HTTP responses are empty (204) or body length == 0, treat as a distinct failure type and record HTTP status, headers, and response time.
+
+2) Add robust retries and backoff
+   - Implement exponential backoff with jitter (e.g., initial 2s, factor 2, max 32s) and a maximum of 5 retries for transient network/API errors.
+   - On repeated failures persist the raw response (including empty bodies) to disk for forensics: /var/log/crawlers/raw/<crawler_id>/<YYYYMMDD_HHMMSS>.bin
+
+3) Improve logging and telemetry
+   - Emit structured logs (JSON) with fields: crawler_id, source_url, timestamp_utc, http_status, response_size_bytes, error_token, retry_count.
+   - Push failure metrics to the monitoring cluster (counter: crawler.empty_response, histogram: crawler.latency_ms).
+
+4) Implement schema validation and fail-fast alerts
+   - Validate ingest payload against the expected schema. If validation fails, write the offending payload to a quarantine bucket and raise an automated alert (pager/email) to the ops queue.
+
+5) Preserve original payload for debugging
+   - Save raw HTTP response headers and body, and the exact command/agent version that performed the crawl.
+
+6) Provide clear error tokens to downstream analysts
+   - Replace opaque messages with structured error objects: {"status":"error","reason":"EMPTY_BODY|AUTH_FAILED|RATE_LIMIT","details":"<original message>"}
+
+7) Example quick-fix code snippets
+   - On HTTP client: check for (response == null) or (response.body == null) or (response.body.length == 0) and treat as explicit error; do not silently convert to success.
+
+8) Regression test
+   - Add unit tests and live integration tests that simulate 204/empty responses, auth failures, and malformed payloads.
+
+Please prioritize these fixes and report back with the next successful ingestion sample (include full raw file and structured parsed output).
